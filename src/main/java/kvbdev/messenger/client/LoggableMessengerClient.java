@@ -26,7 +26,12 @@ public class LoggableMessengerClient extends MessengerClient {
     public void send(String text) {
         super.send(text);
         if (isCommand(text)) return;
-        logMessage(userName + ": " + text);
+        if (isWhisper(text)) {
+            String whisperMessage = text.replaceFirst(" ", ": ").substring(1);
+            logMessage(userName + " -> " + whisperMessage);
+        } else {
+            logMessage(userName + ": " + text);
+        }
     }
 
     protected void logMessage(String text) {
@@ -37,6 +42,10 @@ public class LoggableMessengerClient extends MessengerClient {
 
     protected boolean isCommand(String text) {
         return text.startsWith("/");
+    }
+
+    protected boolean isWhisper(String text) {
+        return text.startsWith("@");
     }
 
     @Override
